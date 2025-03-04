@@ -1,0 +1,12 @@
+{
+    "name": "jadwalsholatbykall/jadwal_sholat",
+    "description": "A simple project to display prayer times.",
+    "require": {
+        "guzzlehttp/guzzle": "^7.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    }
+}
