@@ -61,7 +61,7 @@
 			padding: 10px;
 			border: 1px solid #ddd;
 			border-radius: 4px;
-			margin-top: 20px;
+			margin-top: 10px;
 		}
 		@media (max-width: 768px) {
 			.kotak {
@@ -84,6 +84,19 @@
 			justify-content: center;
 			align-items: center;
 			margin-top: 20px;
+			flex-direction: column;
+		}
+		.search-container input {
+			padding: 10px;
+			border: 1px solid #ddd;
+			border-radius: 4px;
+			width: 200px;
+			margin-bottom: 10px;
+		}
+		.option-container {
+			display: flex;
+			justify-content: center;
+			align-items: center;
 		}
 	</style>
 	<script>
@@ -99,12 +112,39 @@
 			document.getElementById('clock').innerHTML = timeString;
 		}
 		setInterval(updateClock, 1000);
+
+		function filterCities() {
+			var input, filter, select, options, i;
+			input = document.getElementById("citySearch");
+			filter = input.value.toLowerCase();
+			select = document.getElementById("citySelect");
+			options = select.getElementsByTagName("option");
+			for (i = 0; i < options.length; i++) {
+				txtValue = options[i].textContent || options[i].innerText;
+				if (txtValue.toLowerCase().indexOf(filter) > -1) {
+					options[i].style.display = "";
+				} else {
+					options[i].style.display = "none";
+				 }
+			 }
+			if (filter.length > 0) {
+				select.selectedIndex = 0;
+				document.getElementById("citySelectOption").innerHTML = select.innerHTML;
+				document.getElementById("selectedCityTitle").innerHTML = options[select.selectedIndex].textContent;
+			}
+		}
+		function searchCity() {
+			var select = document.getElementById("citySelect");
+			select.selectedIndex = 0;
+			filterCities();
+			select.form.submit();
+		}
 	</script>
 </head>
 <body onload="updateClock()">
 	<div class="container">
 		<h2>Jadwal Shalat dan Imsakiyah</h2>
-		
+		<h3><a href="https://www.malasngoding.com">www.malasngoding.com</a></h3>
 
 		<?php
 		// Mendapatkan tahun dan bulan saat ini
@@ -137,9 +177,10 @@
 		}
 		?>
 
-		<center>
-			<form method="get" action="">
-				<select name="kota" id="citySelect" onchange="this.form.submit()">
+		<div class="search-container">
+			<input type="text" id="citySearch" onkeyup="filterCities()" placeholder="Cari kota atau daerah...">
+			<form method="get" action="" style="display:none;">
+				<select name="kota" id="citySelect">
 					<?php 
 					foreach($list_kota as $k){
 						?>
@@ -149,9 +190,23 @@
 					?>
 				</select>
 			</form>
-		</center>
+		 </div>
 
-		<h3><?php echo $selected_city; ?></h3>
+		<div class="option-container">
+			<form method="get" action="">
+				<select name="kota" id="citySelectOption" onchange="this.form.submit()">
+					<?php 
+					foreach($list_kota as $k){
+						?>
+						<option <?php if($kota_terpilih == $k->id){ echo "selected";} ?> value="<?php echo $k->id ?>"><?php echo $k->lokasi ?></option>
+						<?php
+					}
+					?>
+				</select>
+			</form>
+		</div>
+
+		<h3 id="selectedCityTitle"><?php echo $selected_city; ?></h3>
 
 		<div class="kotak">
 			<div id="clock" class="clock"></div>
